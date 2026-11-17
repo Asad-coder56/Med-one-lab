@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { api } from '../api.js';
 import { LAB, waLink } from '../config.js';
 import TestRow from '../components/TestRow.jsx';
-import BranchCard from '../components/BranchCard.jsx';
 
 const labServices = [
   ['Complete blood tests', 'Accurate, timely reports'],
@@ -37,19 +36,12 @@ export default function Home() {
   const [tests, setTests] = useState([]);
   const [testsLoading, setTestsLoading] = useState(true);
   const [testsError, setTestsError] = useState('');
-  const [branches, setBranches] = useState([]);
-  const [branchesLoading, setBranchesLoading] = useState(true);
-  const [branchesError, setBranchesError] = useState('');
 
   useEffect(() => {
     api('/tests?limit=6')
       .then((d) => setTests(d.items))
       .catch((error) => setTestsError(error.message))
       .finally(() => setTestsLoading(false));
-    api('/branches')
-      .then((d) => setBranches(d.slice(0, 3)))
-      .catch((error) => setBranchesError(error.message))
-      .finally(() => setBranchesLoading(false));
   }, []);
 
   useEffect(() => {
@@ -302,64 +294,65 @@ export default function Home() {
         </div>
       </section>
 
-      <section data-reveal className="bg-mist px-4 py-14 sm:py-16">
-        <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-            <div className="max-w-2xl">
-              <p className="inline-flex items-center gap-2 rounded-full border border-line bg-white px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-brand-dark">
-                <span className="size-2 rounded-full bg-accent-red" aria-hidden="true" />
-                Visit Med One
-              </p>
-              <h2 className="mt-3 text-3xl font-bold sm:text-4xl">Find a branch</h2>
-              <p className="mt-2 leading-relaxed text-ink/70">Find the nearest Med One centre or get directions to our Awan Town location.</p>
+      <section id="booking" data-reveal className="bg-mist px-4 py-14 sm:py-16">
+        <div className="mx-auto grid max-w-7xl gap-8 rounded-3xl bg-gradient-to-br from-brand-dark via-brand to-[#0f5fb8] p-6 text-white shadow-xl shadow-brand/15 sm:p-9 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:gap-12 lg:p-12">
+          <div>
+            <p className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-white/90">
+              <span className="size-2 rounded-full bg-mint" aria-hidden="true" />
+              Online booking
+            </p>
+            <h2 className="mt-4 max-w-xl text-3xl font-bold leading-tight text-white sm:text-4xl">
+              Book a test, doctor visit or home service.
+            </h2>
+            <p className="mt-3 max-w-xl leading-relaxed text-white/75">
+              Send a booking request on WhatsApp. Our team will confirm availability and help you with the next steps.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a
+                href={waLink('Hello Med One Lab, I would like to make a booking. Please share the available times.')}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center rounded-full bg-mint px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-white hover:text-brand-dark"
+              >
+                Start online booking
+              </a>
+              <a
+                href={`tel:+${LAB.whatsapp}`}
+                className="inline-flex items-center justify-center rounded-full border border-white/30 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-white/10"
+              >
+                Call {LAB.phone}
+              </a>
             </div>
-            <Link to="/branches" className="inline-flex w-fit shrink-0 items-center gap-2 rounded-full border border-brand/15 bg-white px-5 py-3 text-sm font-bold text-brand-dark transition-colors hover:bg-brand hover:text-white">
-              Explore all branches
-              <span className="text-lg" aria-hidden="true">→</span>
-            </Link>
           </div>
 
-          {branchesLoading ? (
-            <p className="mt-6 rounded-2xl border border-line bg-white p-5 text-sm text-ink/60" role="status">Loading locations...</p>
-          ) : branches.length ? (
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {branches.map((b) => <BranchCard key={b.id} b={b} />)}
-            </div>
-          ) : (
-            <>
-              {branchesError && <p className="mt-5 text-sm text-ink/65" role="status">Branch listings are unavailable right now; showing our main centre.</p>}
-              <div className="mt-6 grid gap-4 lg:grid-cols-[1.15fr_.85fr]">
-                <article className="rounded-3xl bg-brand p-6 text-white shadow-lg shadow-brand/10 sm:p-8">
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-white/65">Main healthcare centre</p>
-                  <h3 className="mt-2 font-display text-2xl font-bold text-white">Med One Lab</h3>
-                  <address className="mt-3 max-w-xl not-italic leading-relaxed text-white/80">{LAB.address}</address>
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    <a
-                      href={directionsUrl}
-                      target="_blank" rel="noreferrer"
-                      className="inline-flex items-center justify-center rounded-full bg-white px-5 py-3 text-sm font-bold text-brand-dark transition-colors hover:bg-mist"
-                    >
-                      Get directions
-                    </a>
-                    <a href={`tel:+${LAB.whatsapp}`} className="inline-flex items-center justify-center rounded-full border border-white/30 px-5 py-3 text-sm font-bold text-white transition-colors hover:bg-white/10">
-                      Call {LAB.phone}
-                    </a>
-                  </div>
-                </article>
-                <article className="flex flex-col items-start justify-center rounded-3xl border border-line bg-white p-6 sm:p-8">
-                  <span className="flex size-11 items-center justify-center rounded-2xl bg-mist text-brand" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="1.8">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z" />
-                      <circle cx="12" cy="10" r="2.5" />
-                    </svg>
-                  </span>
-                  <h3 className="mt-4 font-display text-xl font-bold text-ink">Need help finding us?</h3>
-                  <p className="mt-2 leading-relaxed text-ink/70">Our team can help with directions, test questions and appointments.</p>
-                  <Link to="/contact" className="mt-5 text-sm font-bold text-brand-dark hover:underline">Contact Med One →</Link>
-                </article>
-              </div>
-            </>
-          )}
+          <div className="grid gap-3 sm:grid-cols-2">
+            <article className="rounded-2xl border border-white/15 bg-white/10 p-5">
+              <span className="text-xs font-bold uppercase tracking-wider text-mint">01 · At the lab</span>
+              <h3 className="mt-3 font-display text-xl font-bold text-white">Tests & doctor appointments</h3>
+              <p className="mt-2 text-sm leading-relaxed text-white/70">Tell us which test or specialist you need and your preferred time.</p>
+              <a
+                href={waLink('Hello Med One Lab, I would like to book a lab test or doctor appointment. My preferred time is: ')}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-white hover:text-mint"
+              >
+                Request a booking <span aria-hidden="true">→</span>
+              </a>
+            </article>
+            <article className="rounded-2xl border border-white/15 bg-white/10 p-5">
+              <span className="text-xs font-bold uppercase tracking-wider text-mint">02 · At home</span>
+              <h3 className="mt-3 font-display text-xl font-bold text-white">Home sample collection</h3>
+              <p className="mt-2 text-sm leading-relaxed text-white/70">Share your area and a preferred time to request a home visit.</p>
+              <a
+                href={waLink('Hello Med One Lab, I would like to book home sample collection. My area is: ')}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-white hover:text-mint"
+              >
+                Book home collection <span aria-hidden="true">→</span>
+              </a>
+            </article>
+          </div>
         </div>
       </section>
 

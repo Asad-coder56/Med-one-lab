@@ -5,7 +5,7 @@ import { LAB, waLink } from '../config.js';
 const links = [
   ['/', 'Home'],
   ['/tests', 'Test list'],
-  ['/branches', 'Branches'],
+  ['/branches', 'Our location'],
   ['/contact', 'Contact'],
 ];
 
